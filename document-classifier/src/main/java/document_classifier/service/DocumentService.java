@@ -8,7 +8,8 @@ import document_classifier.repository.DocumentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -74,26 +75,30 @@ public class DocumentService {
     }
 
     // Get results
-    public List<ClassificationResponse> getResults(Long documentId) {
+    public Map<String, Object> getResults(Long documentId, int page, int size) {
 
-        // check document exists
         if (!documentRepository.existsById(documentId)) {
             throw new RuntimeException("Document not found");
         }
 
-        List<ClassifiedText> list = classifiedTextRepository.findByDocumentId(documentId);
+        Page<ClassifiedText> pageResult =
+                classifiedTextRepository.findByDocumentId(documentId, PageRequest.of(page, size));
 
-        List<ClassificationResponse> response = new ArrayList<>();
+        List<ClassificationResponse> results = pageResult.getContent()
+                .stream()
+                .map(c -> ClassificationResponse.builder()
+                        .text(c.getTextChunk())
+                        .assignedTopic(c.getTopicName())
+                        .confidence(c.getConfidence())
+                        .build())
+                .toList();
 
-        for (ClassifiedText c : list) {
-            response.add(
-                    ClassificationResponse.builder()
-                            .text(c.getTextChunk())
-                            .assignedTopic(c.getTopicName())
-                            .confidence(c.getConfidence())
-                            .build()
-            );
-        }
+        Map<String, Object> response = new HashMap<>();
+        response.put("documentId", documentId);
+        response.put("results", results);
+        response.put("currentPage", page);
+        response.put("totalPages", pageResult.getTotalPages());
+        response.put("totalElements", pageResult.getTotalElements());
 
         return response;
     }

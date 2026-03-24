@@ -43,18 +43,30 @@ public class DocumentController {
             description = "Retrieve classified text chunks along with assigned topics and confidence scores"
     )
     //  Get results
+//    @GetMapping("/{id}/results")
+//    public Map<String, Object> getResults(@PathVariable Long id) {
+//
+//        List<ClassificationResponse> results = documentService.getResults(id);
+//
+//        Map<String, Object> response = new HashMap<>();
+//        response.put("documentId", id);
+//        response.put("results", results);
+//
+//        if (results.isEmpty()) {
+//            response.put("message", "No classification results found");
+//        }
+//
+//        return response;
+//    }
     @GetMapping("/{id}/results")
-    public Map<String, Object> getResults(@PathVariable Long id) {
+    public Map<String, Object> getResults(
+            @PathVariable Long id,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size
+    ) {
 
-        List<ClassificationResponse> results = documentService.getResults(id);
-
-        Map<String, Object> response = new HashMap<>();
-        response.put("documentId", id);
-        response.put("results", results);
-
-        if (results.isEmpty()) {
-            response.put("message", "No classification results found");
-        }
+        // 🔥 Direct service ka response return karo
+        Map<String, Object> response = documentService.getResults(id, page, size);
 
         return response;
     }
