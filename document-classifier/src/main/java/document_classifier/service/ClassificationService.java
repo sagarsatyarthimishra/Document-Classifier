@@ -40,15 +40,31 @@ public class ClassificationService {
         List<Topic> topics = topicRepository.findAll();
 
         Topic bestTopic = null;
-        int maxScore = 0;
+        double maxScore = 0;
+
+        String lowerSentence = sentence.toLowerCase();
 
         for (Topic topic : topics) {
-            int score = 0;
+
+            double score = 0;
 
             for (String keyword : topic.getKeywords()) {
-                if (sentence.toLowerCase().contains(keyword.toLowerCase())) {
-                    score++;
+
+                String lowerKeyword = keyword.toLowerCase();
+
+                // Exact match
+                if (lowerSentence.contains(" " + lowerKeyword + " ")) {
+                    score += 2;
                 }
+                // Partial match
+                else if (lowerSentence.contains(lowerKeyword)) {
+                    score += 1;
+                }
+            }
+
+            // bonus if multiple keywords matched
+            if (score > 1) {
+                score += 0.5;
             }
 
             if (score > maxScore) {
@@ -63,9 +79,9 @@ public class ClassificationService {
             result.put("topic", "UNCLASSIFIED");
             result.put("confidence", 0.0);
         } else {
-            double confidence = (double) maxScore / bestTopic.getKeywords().size();
+            double confidence = maxScore / (bestTopic.getKeywords().size() * 2);
             result.put("topic", bestTopic.getTitle());
-            result.put("confidence", confidence);
+            result.put("confidence", Math.min(confidence, 1.0));
         }
 
         return result;
