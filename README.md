@@ -17,6 +17,7 @@ This project is a Spring Boot backend system that processes documents (PDF or te
 * Dashboard Analytics
 * Swagger API Documentation
 * Dockerized Deployment
+* Pagination
 
 ---
 
