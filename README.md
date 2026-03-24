@@ -23,7 +23,7 @@ This project is a Spring Boot backend system that processes documents (PDF or te
 ## ⚙️ Tech Stack
 
 * Java 21
-* Spring Boot 3.x
+* Spring Boot 4.x
 * PostgreSQL (Supabase)
 * JPA / Hibernate
 * Apache PDFBox
