@@ -22,7 +22,7 @@ public class DocumentService {
 
     public Long processDocument(String text, MultipartFile file) throws Exception {
 
-        // 🔥 Validation: only one input allowed
+        // Validation: only one input allowed
         if ((text == null || text.isEmpty()) && (file == null || file.isEmpty())) {
             throw new RuntimeException("Either text or file must be provided");
         }
@@ -33,16 +33,16 @@ public class DocumentService {
 
         String extractedText;
 
-        // 🔹 Case 1: TEXT input
+        // Case 1: TEXT input
         if (text != null && !text.isEmpty()) {
             extractedText = text;
         }
-        // 🔹 Case 2: PDF input
+        // Case 2: PDF input
         else {
             extractedText = classificationService.extractTextFromPdf(file);
         }
 
-        // 🔹 Save document
+        // Save document
         Document document = Document.builder()
                 .originalText(extractedText)
                 .createdAt(LocalDateTime.now())
@@ -50,10 +50,10 @@ public class DocumentService {
 
         Document savedDoc = documentRepository.save(document);
 
-        // 🔹 Split text
+        // Split text
         List<String> sentences = classificationService.splitText(extractedText);
 
-        // 🔹 Classify each sentence
+        // Classify each sentence
         for (String sentence : sentences) {
 
             if (sentence.trim().isEmpty()) continue;
@@ -73,10 +73,10 @@ public class DocumentService {
         return savedDoc.getId();
     }
 
-    // 🔹 Get results
+    // Get results
     public List<ClassificationResponse> getResults(Long documentId) {
 
-        // 🔥 check document exists
+        // check document exists
         if (!documentRepository.existsById(documentId)) {
             throw new RuntimeException("Document not found");
         }

@@ -17,7 +17,7 @@ public class ClassificationService {
 
     private final TopicRepository topicRepository;
 
-    // 🔹 Extract text from PDF
+    // Extract text from PDF
     public String extractTextFromPdf(MultipartFile file) throws IOException {
         try (PDDocument document = PDDocument.load(file.getInputStream())) {
             PDFTextStripper stripper = new PDFTextStripper();
@@ -25,7 +25,7 @@ public class ClassificationService {
         }
     }
 
-    // 🔹 Split into sentences
+    // Split into sentences
     public List<String> splitText(String text) {
 
         return Arrays.stream(text.split("[\\.\\n]"))
@@ -34,7 +34,7 @@ public class ClassificationService {
                 .toList();
     }
 
-    // 🔹 Classification logic
+    // Classification logic
     public Map<String, Object> classify(String sentence) {
 
         List<Topic> topics = topicRepository.findAll();
@@ -59,7 +59,6 @@ public class ClassificationService {
 
         Map<String, Object> result = new HashMap<>();
 
-        // 🔥 YAHI IMPORTANT PART HAI
         if (bestTopic == null || maxScore == 0) {
             result.put("topic", "UNCLASSIFIED");
             result.put("confidence", 0.0);

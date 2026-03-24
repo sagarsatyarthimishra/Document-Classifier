@@ -7,7 +7,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
+@Tag(name = "Dashboard API", description = "Summary statistics of processed documents")
 @RestController
 @RequestMapping("/api/dashboard")
 @RequiredArgsConstructor
@@ -16,6 +19,10 @@ public class DashboardController {
     private final DocumentRepository documentRepository;
     private final ClassifiedTextRepository classifiedTextRepository;
 
+    @Operation(
+            summary = "Get dashboard statistics",
+            description = "Returns total documents, total chunks, and topic distribution"
+    )
     @GetMapping
     public Map<String, Object> getDashboard() {
 
