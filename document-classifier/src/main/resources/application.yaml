@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: document-classifier
+  datasource:
+    url: jdbc:postgresql://aws-1-ap-southeast-1.pooler.supabase.com:5432/postgres
+    username: postgres.opvpbaptpasilaylxzut
+    password: 9473746455@Sagar
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
